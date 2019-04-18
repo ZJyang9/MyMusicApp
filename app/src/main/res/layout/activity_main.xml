@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+
+    <!--toolbar-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
+        android:background="#fff"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="ForU"
+            android:textColor="@color/colorDrawer"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8">
+        <!--主内容区-->
+
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/pauseBtn_image"
+                android:layout_width="92dp"
+                android:layout_height="115dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_search_black_24dp" />
+        </RelativeLayout>-->
+
+        <!--主内容区的图片放置-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="7">
+
+                <ImageView
+                    android:id="@+id/backImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/test" />
+
+                <ImageView
+                    android:id="@+id/pauseBtn_image"
+                    android:layout_width="92dp"
+                    android:layout_height="115dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="145dp"
+                    android:layout_marginBottom="171dp"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/test1" />
+
+            </RelativeLayout>
+
+            <!--主内容区的按钮放置-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <SeekBar
+                        android:id="@+id/mSeekBar"
+                        android:layout_width="213dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:maxHeight="3dp"
+                        android:progressDrawable="@drawable/seek_style"
+                        android:thumbTint="@android:color/holo_orange_dark" />
+                    <!--android:backgroundTint="@android:color/holo_orange_dark"
+                        android:progressBackgroundTint="@color/design_default_color_primary"
+                        android:thumbTint="@android:color/holo_orange_dark"-->
+
+                    <TextView
+                        android:id="@+id/mTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/mSeekBar"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="0dp"
+                        android:text="TextView" />
+
+                    <ImageButton
+                        android:id="@+id/disLike_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="42dp"
+                        android:layout_marginTop="0dp"
+
+                        app:srcCompat="@android:drawable/ic_delete" />
+
+                    <ImageButton
+                        android:id="@+id/like_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/disLike_btn"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="42dp"
+                        android:layout_marginBottom="0dp"
+                        app:srcCompat="@android:drawable/ic_input_add" />
+
+
+                    <Button
+                        android:id="@+id/play_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="播放" />
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--侧滑区-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#fff"
+            android:orientation="vertical">
+
+            <!--<ListView
+                    android:id="@+id/dl_left_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@null"
+                    android:text="DrawerLayout" />-->
+
+            <Button
+                android:id="@+id/login_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="login" />
+
+            <Button
+                android:id="@+id/setting_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="setting" />
+        </LinearLayout>
+
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>
