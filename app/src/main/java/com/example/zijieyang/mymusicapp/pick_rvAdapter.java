@@ -19,18 +19,23 @@ import java.util.List;
 public class pick_rvAdapter extends RecyclerView.Adapter<pick_rvAdapter.MyViewHolder> {
     private Context context;
     private List<String> datas;
-    private Boolean  selected[] = {false,false,false,false}; //未被选择
-    private  List<Integer> keyId = new ArrayList<Integer>();
+    private Boolean  selected[]  = {false,false,false,false}; //未被选择
+    private List<Integer> keyId  = new ArrayList<Integer>();
     private Boolean b_sub_square = false;
 
     //private OnItemClickListener mOnItemClickListener = null;
 
-
+    /*
+        每个recyclerView调用此方法传递数据
+     */
     public pick_rvAdapter(Context context, List<String> datas) {
         this.context = context;
         this.datas = datas;
     }
 
+    /*
+        这里是创建一个视图拥有者(ViewHolder)，将rv_list_first渲染到每个recyclerView的item上
+     */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View contentView= LayoutInflater.from(context).inflate(R.layout.rv_list_first,parent,false);
@@ -38,6 +43,9 @@ public class pick_rvAdapter extends RecyclerView.Adapter<pick_rvAdapter.MyViewHo
         return viewHolder;
     }
 
+    /*
+        这里绑定视图，可以操控每个item的具体样式或者监听
+     */
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         //holder.imageView.setImageResource(datas.get(position));
@@ -47,12 +55,10 @@ public class pick_rvAdapter extends RecyclerView.Adapter<pick_rvAdapter.MyViewHo
             int mposition = position;
             @Override
             public void onClick(View v ) {
-                /*if(selected == false){
-                    selected = true;
-                }
-                else{
-                    selected = false;
-                }*/
+              /*
+                    这里可以优化，只写一个监听，任何一个按钮被点击时会返回给后端标签信息，可以直接返回位置position，位置作为信息的标志，
+                    例如“华语”在第一个，返回“0”，0就代表华语，后端收集信息再进行推荐
+               */
 
                 switch (mposition){
                     case 0 :
@@ -123,15 +129,15 @@ public class pick_rvAdapter extends RecyclerView.Adapter<pick_rvAdapter.MyViewHo
             }
         });
     }
-
+    /*
+        返回item的数量
+     */
     @Override
     public int getItemCount() {
         return datas==null?0:datas.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
-        public TextView textViewv;
         private Button button;
 
         public MyViewHolder(View itemView) {

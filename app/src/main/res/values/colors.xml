@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#562134</color>
     <color name="colorBlack">#000</color>
-    <color name="colorDrawer">#EB6046</color>
-    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorDrawer">#eb6046</color>
+    <color name="colorWhite">#ffffff</color>
 </resources>

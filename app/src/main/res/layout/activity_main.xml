@@ -23,10 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/cherry_cream_soda"
             android:gravity="center"
             android:text="ForU"
             android:textColor="@color/colorDrawer"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
 
@@ -60,25 +61,42 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="7">
+                android:layout_weight="5">
 
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/backImage"
-                    android:layout_width="match_parent"
+                    android:layout_width="330dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="23dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="23dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/test"
+                    android:scaleType="centerCrop"
                     android:visibility="visible"
-                    app:srcCompat="@drawable/test" />
+                    app:srcCompat="@drawable/test" />-->
+
+
+                    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+                        android:id="@+id/frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+
+                        app:rotation_degrees="15.5"
+                        tools:context=".MainActivity" />
+
 
                 <ImageView
                     android:id="@+id/pauseBtn_image"
-                    android:layout_width="92dp"
-                    android:layout_height="115dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="145dp"
-                    android:layout_marginBottom="171dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.8"
                     android:visibility="invisible"
-                    app:srcCompat="@drawable/test1" />
+                    app:srcCompat="@mipmap/pause_btn" />
 
             </RelativeLayout>
 
@@ -93,74 +111,66 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <SeekBar
-                        android:id="@+id/mSeekBar"
-                        android:layout_width="213dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:maxHeight="3dp"
-                        android:progressDrawable="@drawable/seek_style"
-                        android:thumbTint="@android:color/holo_orange_dark" />
-                    <!--android:backgroundTint="@android:color/holo_orange_dark"
-                        android:progressBackgroundTint="@color/design_default_color_primary"
-                        android:thumbTint="@android:color/holo_orange_dark"-->
-
-                    <TextView
-                        android:id="@+id/mTextView"
+                    <!-- 完整播放的样式，默认隐藏-->
+                    <RelativeLayout
+                        android:id="@+id/seek_play"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/mSeekBar"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="0dp"
-                        android:text="TextView" />
+                        android:visibility="invisible">
+
+                        <include layout="@layout/seek_play" />
+
+                    </RelativeLayout>
 
                     <ImageButton
                         android:id="@+id/disLike_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="42dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="58dp"
                         android:layout_marginTop="0dp"
+                        android:layout_marginBottom="27dp"
+                        android:background="#fff"
+                        android:visibility="visible"
+                        app:srcCompat="@mipmap/dislike" />
 
-                        app:srcCompat="@android:drawable/ic_delete" />
+
+                    <ImageButton
+                        android:id="@+id/play_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/seek_play"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="27dp"
+                        android:background="#fff"
+                        android:visibility="visible"
+                        app:srcCompat="@mipmap/play" />
 
                     <ImageButton
                         android:id="@+id/like_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/disLike_btn"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="42dp"
-                        android:layout_marginBottom="0dp"
-                        app:srcCompat="@android:drawable/ic_input_add" />
-
-
-                    <Button
-                        android:id="@+id/play_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="播放" />
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginEnd="58dp"
+                        android:layout_marginBottom="27dp"
+                        android:background="#fff"
+                        android:visibility="visible"
+                        app:srcCompat="@mipmap/like" />
                 </RelativeLayout>
             </LinearLayout>
 
         </LinearLayout>
         <!--侧滑区-->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="290dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="#fff"
             android:orientation="vertical">
 
-            <!--<ListView
-                    android:id="@+id/dl_left_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:divider="@null"
-                    android:text="DrawerLayout" />-->
+
 
             <Button
                 android:id="@+id/login_btn"
@@ -173,6 +183,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="setting" />
+            <!--<RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="92dp"
+                    android:layout_marginTop="243dp"/>
+                <TextView
+                    android:id="@+id/likeSongs_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="喜欢的歌"
+                    android:textColor="#ff2a2a2a"
+                    android:textSize="15sp"
+                    android:layout_marginStart="139dp"
+                    android:layout_marginTop="244dp"/>
+            </RelativeLayout>-->
         </LinearLayout>
 
     </android.support.v4.widget.DrawerLayout>

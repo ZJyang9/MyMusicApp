@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- 完整播放的样式，默认隐藏-->
+    <SeekBar
+        android:id="@+id/mSeekBar"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-9dp"
+        android:layout_marginTop="44dp"
+        android:maxHeight="3dp"
+        android:progressDrawable="@drawable/seek_style"
+        android:thumbTint="@android:color/holo_orange_dark" />
+        <!-- 进度条拖动点颜色-->
+    <TextView
+        android:id="@+id/now_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/mSeekBar"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_marginStart="11dp"
+        android:layout_marginBottom="-46dp"
+        android:text="0:09" />
+
+    <TextView
+        android:id="@+id/remaining_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/now_time"
+        android:layout_marginStart="-45dp"
+        android:layout_toEndOf="@+id/mSeekBar"
+        android:text="4:40" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="10dp"
+        android:text="完整版"
+        android:textColor="#000"
+        android:textSize="15sp" />
+
+    <ImageButton
+
+        android:id="@+id/seek_disLike_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="170dp"
+        android:layout_marginBottom="-2dp"
+        android:background="#fff"
+        android:maxHeight="10dp"
+        app:srcCompat="@mipmap/seek_dislike" />
+
+    <ImageButton
+        android:id="@+id/seek_next_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="220dp"
+        android:layout_marginBottom="-2dp"
+        android:background="#fff"
+        app:srcCompat="@mipmap/seek_next" />
+
+    <ImageButton
+        android:id="@+id/seek_like_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/mSeekBar"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="-59dp"
+        android:background="#fff"
+        app:srcCompat="@mipmap/like" />
+
+
+</RelativeLayout>

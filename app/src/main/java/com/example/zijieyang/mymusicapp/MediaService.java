@@ -1,6 +1,7 @@
 package com.example.zijieyang.mymusicapp;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -13,41 +14,37 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MediaService extends Service {
     private static final String TAG = "MediaService";
     private MyBinder mBinder = new MyBinder();
-
     //初始化MediaPlayer
     public MediaPlayer mMediaPlayer = new MediaPlayer();
 
     //标记当前歌曲的序号
     private int i = 0;
     //歌曲路径
-    private String[] musicPath = new String[]{
+    /*private String[] musicPath = new String[]{
             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/test1.mp3",
             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/test2.mp3",
             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/test3.mp3",
             Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/test4.kgm"  //kgm无法识别
-    };
+    };*/
+    public List<String> musicPath = new ArrayList<>();
 
 
 
     public MediaService() {
-        iniMediaPlayerFile(i);
-        /*try {
-            mMediaPlayer = MediaPlayer.create(this,R.raw.love);
-            mMediaPlayer.prepare();
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
 
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        //throw new UnsupportedOperationException("Not yet implemented");
+        System.out.print("进入到bind");
+        musicPath = intent.getExtras().getStringArrayList("musicPath");
+        iniMediaPlayerFile(i);
         return mBinder;
     }
 
@@ -70,7 +67,6 @@ public class MediaService extends Service {
                 mMediaPlayer.start();
             }
         }
-
         /**
          * 暂停播放
          */
@@ -107,17 +103,20 @@ public class MediaService extends Service {
          */
         public void nextMusic() {
 
-            if (mMediaPlayer != null && i < 4 && i >= 0) {
+            System.out.print("进入到下一首歌，此时i=" + i );
+            //当i增加到歌曲数组的最后一首歌时
+            if (i == musicPath.size()-1) {
+                i = 0;
+            } else {
+                i++;
+            }
+            if (mMediaPlayer != null && i < musicPath.size() && i >= 0) {
                 //切换歌曲reset()很重要很重要很重要，没有会报IllegalStateException
                 mMediaPlayer.reset();
-                iniMediaPlayerFile(i + 1);
-                //这里的if只要是为了不让歌曲的序号越界，因为只有4首歌
-                if (i == 2) {
-
-                } else {
-                    i = i + 1;
-                }
+                iniMediaPlayerFile(i);
                 playMusic();
+
+
             }
         }
 
@@ -157,24 +156,38 @@ public class MediaService extends Service {
          * 播放指定位置
          */
         public void seekToPositon(int msec) {
+
             mMediaPlayer.seekTo(msec);
         }
     }
     /**
      * 添加file文件到MediaPlayer对象并且准备播放音频
      */
-    private void iniMediaPlayerFile(int dex) {
-        //获取文件路径
-        try {
-            //此处的两个方法需要捕获IO异常
-            //设置音频文件到MediaPlayer对象中
-            mMediaPlayer.setDataSource(musicPath[dex]);
-            //让MediaPlayer对象准备
-            mMediaPlayer.prepare();
-        } catch (IOException e) {
-            Log.d(TAG, "设置资源，准备阶段出错");
-            e.printStackTrace();
-        }
+    public void iniMediaPlayerFile(int dex) {
+        System.out.print("进入到iniMediaPlayerFile");
+            //获取文件路径
+            try {
+                //此处的两个方法需要捕获IO异常
+                //设置音频文件到MediaPlayer对象中
+                mMediaPlayer.setDataSource(musicPath.get(dex));
+                //注意下面的路径会失效 ， 失效会导致app无法打开
+                //mMediaPlayer.setDataSource("https://fsshare.kugou.com/1904261207/wKFaP3vfHO-wcum5ce94XA/1556338035/G140/M08/0D/11/bJQEAFuy0VKAORvqADir7cUwAB4376.mp3");
+                //让MediaPlayer对象准备
+                mMediaPlayer.prepare();
+            } catch (IOException e) {
+                Log.d(TAG, "设置资源，准备阶段出错");
+                e.printStackTrace();
+            }
+
     }
 
+
 }
+
+
+
+
+
+
+
+

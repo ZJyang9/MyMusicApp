@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,9 @@ public class pickActivity extends AppCompatActivity {
     private String[] symbol_four = new String[]{"流行","摇滚","R&B","电音","嘻哈","民谣","轻音乐","古风","复古","舞曲","古典","二次元","另类/独立"};//style
     private String[] symbol_two = new String[]{"今年","2018","2017","2016","10'","2000'","90'","更早"};//date
     private String[] symbol_one = new String[]{"翻唱","ACG","影视BGM","3D音乐","丧曲","小众音乐人","抖音"};//Trending Now
-    private Button ok_btn,random_btn,button;
+    private Button ok_btn,random_btn,button,test_btn;
+    private Boolean random_isSelected = false;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +40,24 @@ public class pickActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pick);
         Intent intent = getIntent();
 
-        recyclerView_one = (RecyclerView) findViewById(R.id.recyclerView_one);
-        recyclerView_two = (RecyclerView) findViewById(R.id.recyclerView_two);
+        /*
+            几个标签就写几个适配器
+         */
+        recyclerView_one   = (RecyclerView) findViewById(R.id.recyclerView_one);
+        recyclerView_two   = (RecyclerView) findViewById(R.id.recyclerView_two);
         recyclerView_three = (RecyclerView) findViewById(R.id.recyclerView_three);
 
-        ok_btn = findViewById(R.id.ok_btn);
+        toolbar    = findViewById(R.id.pick_toolbar);
+        ok_btn     = findViewById(R.id.ok_btn);
         random_btn = findViewById(R.id.random_btn);
-        button = (Button)findViewById(R.id.button);
+        button     = findViewById(R.id.button);
+        test_btn   = findViewById(R.id.test_btn);
 
         initData();
+
+        setSupportActionBar(toolbar);//这句代码让toobar显示
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationIcon(R.mipmap.pick_back);
 
         ok_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +68,19 @@ public class pickActivity extends AppCompatActivity {
         random_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                button.setClickable(false);
+                random_isSelected = !random_isSelected;
+                if(random_isSelected) {
+                    test_btn.setEnabled(false);
+                }
+                else {
+                    test_btn.setEnabled(true);
+                }
+            }
+        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -66,10 +90,10 @@ public class pickActivity extends AppCompatActivity {
        初始化数据
      */
     private void initData() {
-        List<String> datas_one = new ArrayList<String>();
-        List<String> datas_two = new ArrayList<String>();
+        List<String> datas_one   = new ArrayList<String>();
+        List<String> datas_two   = new ArrayList<String>();
         List<String> datas_three = new ArrayList<String>();
-        List<String> datas_four = new ArrayList<String>();
+        List<String> datas_four  = new ArrayList<String>();
 
         /*/
             语言分类的循环添加数据
@@ -115,10 +139,11 @@ public class pickActivity extends AppCompatActivity {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-                outRect.left = 15;
+                outRect.left  = 15;
                 outRect.right = 15;
-                outRect.top = 10;
-                outRect.top = 10;
+                outRect.top   = 15;
+                outRect.top   = 60;
+
             }
         });
 
@@ -126,10 +151,11 @@ public class pickActivity extends AppCompatActivity {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-                outRect.left = 15;
+                outRect.left  = 15;
                 outRect.right = 15;
-                outRect.top = 10;
-                outRect.top = 10;
+                outRect.top   = 15;
+                outRect.top   = 60;
+
             }
         });
 
@@ -137,10 +163,11 @@ public class pickActivity extends AppCompatActivity {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-                outRect.left = 15;
+                outRect.left  = 15;
                 outRect.right = 15;
-                outRect.top = 10;
-                outRect.top = 10;
+                outRect.top   = 15;
+                outRect.top   = 60;
+
             }
         });
 
