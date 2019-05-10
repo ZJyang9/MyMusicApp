@@ -5,7 +5,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="#FAFBFB"
     android:orientation="vertical">
 
 
@@ -15,20 +15,19 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7"
-        android:background="#fff"
+        android:background="#FAFBFB"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
         <TextView
+            android:id="@+id/main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/cherry_cream_soda"
             android:gravity="center"
-            android:text="ForU"
+            android:text="Discovery"
             android:textColor="@color/colorDrawer"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
 
     </android.support.v7.widget.Toolbar>
@@ -63,40 +62,14 @@
                 android:layout_height="0dp"
                 android:layout_weight="5">
 
-                <!--<ImageView
-                    android:id="@+id/backImage"
-                    android:layout_width="330dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="23dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="23dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/test"
-                    android:scaleType="centerCrop"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/test" />-->
-
-
                     <com.lorentzos.flingswipe.SwipeFlingAdapterView
                         android:id="@+id/frame"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-
                         app:rotation_degrees="15.5"
                         tools:context=".MainActivity" />
-
-
-                <ImageView
-                    android:id="@+id/pauseBtn_image"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:alpha="0.8"
-                    android:visibility="invisible"
-                    app:srcCompat="@mipmap/pause_btn" />
 
             </RelativeLayout>
 
@@ -131,7 +104,7 @@
                         android:layout_marginStart="58dp"
                         android:layout_marginTop="0dp"
                         android:layout_marginBottom="27dp"
-                        android:background="#fff"
+                        android:background="@android:color/transparent"
                         android:visibility="visible"
                         app:srcCompat="@mipmap/dislike" />
 
@@ -143,7 +116,7 @@
                         android:layout_alignBottom="@+id/seek_play"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="27dp"
-                        android:background="#fff"
+                        android:background="@android:color/transparent"
                         android:visibility="visible"
                         app:srcCompat="@mipmap/play" />
 
@@ -155,14 +128,14 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginEnd="58dp"
                         android:layout_marginBottom="27dp"
-                        android:background="#fff"
+                        android:background="@android:color/transparent"
                         android:visibility="visible"
                         app:srcCompat="@mipmap/like" />
                 </RelativeLayout>
             </LinearLayout>
 
-        </LinearLayout>
-        <!--侧滑区-->
+<!--        </LinearLayout>
+        &lt;!&ndash;侧滑区&ndash;&gt;
         <LinearLayout
             android:layout_width="290dp"
             android:layout_height="match_parent"
@@ -182,7 +155,8 @@
                 android:id="@+id/setting_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="setting" />
+                android:text="setting" />-->
+
             <!--<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

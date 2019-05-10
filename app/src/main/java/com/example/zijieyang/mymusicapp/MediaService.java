@@ -16,12 +16,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MediaService extends Service {
     private static final String TAG = "MediaService";
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+    private int currentPosition; //现在播放位置的时间
     private MyBinder mBinder = new MyBinder();
     //初始化MediaPlayer
-    public MediaPlayer mMediaPlayer = new MediaPlayer();
+    public static MediaPlayer mMediaPlayer = new MediaPlayer();
 
     //标记当前歌曲的序号
     private int i = 0;
@@ -161,6 +166,30 @@ public class MediaService extends Service {
         }
     }
     /**
+     * 一开始进入界面播放，需要设置30s的时间
+     */
+    public void mainStartMusic(){
+        mMediaPlayer.start();
+        mTimer = new Timer();
+        mTimerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                if (mMediaPlayer.isPlaying()) {
+                    currentPosition = mMediaPlayer.getCurrentPosition();//当视频播放的时间点和指定结束点相同时暂停视频
+                    Log.i(""," 当前播放时间： " + currentPosition);
+                    if (currentPosition >= 10000) {
+                        mMediaPlayer.pause();
+                    }
+                }
+                else if (!mMediaPlayer.isPlaying() && currentPosition >= 10000){
+                    mTimer.cancel();
+                }
+            }
+        };
+        mTimer.schedule(mTimerTask, 0, 10);//每10ms就run一次
+    }
+    /**
      * 添加file文件到MediaPlayer对象并且准备播放音频
      */
     public void iniMediaPlayerFile(int dex) {
@@ -172,8 +201,11 @@ public class MediaService extends Service {
                 mMediaPlayer.setDataSource(musicPath.get(dex));
                 //注意下面的路径会失效 ， 失效会导致app无法打开
                 //mMediaPlayer.setDataSource("https://fsshare.kugou.com/1904261207/wKFaP3vfHO-wcum5ce94XA/1556338035/G140/M08/0D/11/bJQEAFuy0VKAORvqADir7cUwAB4376.mp3");
+
                 //让MediaPlayer对象准备
                 mMediaPlayer.prepare();
+
+                mainStartMusic();
             } catch (IOException e) {
                 Log.d(TAG, "设置资源，准备阶段出错");
                 e.printStackTrace();

@@ -9,10 +9,10 @@
             <!-- angle 是角度 -->
             <gradient
                 android:angle="270"
-                android:centerColor="#4876FF"
+                android:centerColor="#CDCCCC"
                 android:centerY="0.5"
-                android:endColor="#4876FF"
-                android:startColor="#4876FF" />
+                android:endColor="#CDCCCC"
+                android:startColor="#CDCCCC" />
         </shape>
     </item>
 
@@ -21,14 +21,14 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="5dip" />
+                <corners android:radius="1dip" />
 
                 <gradient
                     android:angle="270"
-                    android:centerColor="#ffb80e"
+                    android:centerColor="#323434"
                     android:centerY="0.5"
-                    android:endColor="#ffb80e"
-                    android:startColor="#ffb80e" />
+                    android:endColor="#323434"
+                    android:startColor="#323434" />
             </shape>
         </clip>
     </item>

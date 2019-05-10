@@ -9,16 +9,17 @@
     <Button
         android:id="@+id/button"
         android:background="@drawable/btn_click"
-
+        android:textColor="@drawable/btn_click_text_color"
         android:layout_width="75dp"
         android:layout_height="35dp"
         android:text="华语"
-        android:textSize="13sp"
+        android:textSize="13dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         style="?android:attr/borderlessButtonStyle"/>
+
 
     <!--<Button
         android:id="@+id/button2"

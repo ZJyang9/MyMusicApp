@@ -14,13 +14,13 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/pick_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="sans-serif-condensed"
-            android:text="筛  选"
-            android:textColor="#000"
-            android:textSize="20sp" />
+            android:text="筛选"
+            android:textColor="#CC2A2A2A"
+            android:textSize="18sp" />
     </android.support.v7.widget.Toolbar>
     <ScrollView
         android:layout_width="match_parent"
@@ -36,8 +36,9 @@
             <Button
                 android:id="@+id/test_btn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
+                android:layout_height="20dp"
+                android:text="button"
+                android:visibility="invisible" />
 
             <Button
                 android:id="@+id/random_btn"
@@ -48,7 +49,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="0dp"
                 android:background="@drawable/btn_click"
-                android:fontFamily="cursive"
+                android:textColor="@drawable/btn_click_text_color"
                 android:textSize="13sp"
                 android:text="随便听听"
                 style="?android:attr/borderlessButtonStyle"/>
@@ -65,7 +66,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="25dp"
                     android:background="#fff"
-                    android:fontFamily="sans-serif"
+                    android:fontFamily="@font/pingfang_std"
                     android:text="# Trending Now"
                     android:layout_marginStart="15dp"
                     android:textColor="@color/colorDrawer"
@@ -97,8 +98,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="25dp"
                     android:background="#fff"
-                    android:fontFamily="sans-serif"
                     android:text="# 发行年份"
+                    android:fontFamily="@font/pingfang_std"
                     android:layout_marginStart="15dp"
                     android:textColor="@color/colorDrawer"
                     android:textSize="14sp" />
@@ -130,7 +131,7 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginStart="15dp"
                     android:background="#fff"
-                    android:fontFamily="sans-serif"
+                    android:fontFamily="@font/pingfang_std"
                     android:text="# 语言"
                     android:textColor="@color/colorDrawer"
                     android:textSize="14sp" />
@@ -164,11 +165,10 @@
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="0dp"
-            android:alpha="0.7"
-            android:background="@color/colorDrawer"
-            android:fontFamily="cursive"
-            android:text="选 好 了"
+            android:alpha="0.8"
+            android:background="@drawable/pick_btn_style"
+            android:text="选好了"
             android:textColor="@color/colorWhite"
-            android:textSize="20dp" />
+            android:textSize="18sp" />
     </RelativeLayout>
 </LinearLayout>

@@ -3,24 +3,24 @@
     <item android:state_activated="false">
         <shape android:shape="rectangle" >
             <solid android:color="#ffffff" />
-            <corners android:radius="20dp" />
-            <stroke android:width="1dp" android:color="#989697" />
+            <corners android:radius="18dp" />
+            <stroke android:width="0.5dp" android:color="#80989697" />
         </shape>
     </item>
 
     <item android:state_activated="true" >
         <shape android:shape="rectangle">
             <solid android:color="@color/colorDrawer" />
-            <corners android:radius="20dp" />
-            <stroke android:width="1dp" android:color="#989697" />
+            <corners android:radius="18dp" />
+            <stroke android:width="0.5dp" android:color="#FFFFFF" />
         </shape>
     </item>
 
     <item android:state_enabled="false" >
         <shape android:shape="rectangle">
-            <solid android:color="#5B5B5B" />
-            <corners android:radius="20dp" />
-            <stroke android:width="1dp" android:color="#989697" />
+            <solid android:color="#805B5B5B" />
+            <corners android:radius="18dp" />
+            <stroke android:width="0.5dp" android:color="#80989697" />
         </shape>
     </item>
 </selector>

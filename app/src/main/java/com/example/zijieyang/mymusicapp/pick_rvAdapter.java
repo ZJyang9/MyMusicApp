@@ -2,6 +2,8 @@ package com.example.zijieyang.mymusicapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +51,10 @@ public class pick_rvAdapter extends RecyclerView.Adapter<pick_rvAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         //holder.imageView.setImageResource(datas.get(position));
+
+        Typeface typeface = ResourcesCompat.getFont(context, R.font.pingfang_light);
+        holder.button.setTypeface(typeface);
+
         holder.button.setText(datas.get(position));
 
         holder.button.setOnClickListener(new View.OnClickListener() {

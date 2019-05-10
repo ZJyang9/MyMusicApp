@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyMusicApp</string>
+    <string name="app_name">ForU</string>
     <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -13,4 +13,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">立即登录</string>
+    <string name="nav_header_subtitle">更精准地了解你的音乐品味</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>

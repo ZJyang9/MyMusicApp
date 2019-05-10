@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +35,7 @@ public class pickActivity extends AppCompatActivity {
     private Button ok_btn,random_btn,button,test_btn;
     private Boolean random_isSelected = false;
     private Toolbar toolbar;
+    private TextView pick_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,15 @@ public class pickActivity extends AppCompatActivity {
         toolbar    = findViewById(R.id.pick_toolbar);
         ok_btn     = findViewById(R.id.ok_btn);
         random_btn = findViewById(R.id.random_btn);
-        button     = findViewById(R.id.button);
         test_btn   = findViewById(R.id.test_btn);
+        pick_title = findViewById(R.id.pick_title); //标题文字
+
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.pingfang_std);
+        ok_btn.setTypeface(typeface);
+
+        Typeface typeface1 = ResourcesCompat.getFont(this, R.font.pingfang_light);
+        random_btn.setTypeface(typeface1);
+        pick_title.setTypeface(typeface);
 
         initData();
 

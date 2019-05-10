@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     android:layout_width="330dp"
     android:layout_height="450dp">
@@ -14,12 +15,35 @@
         tools:text="hello"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />-->
-    <ImageView
+
+<!--    <ImageView
         android:id="@+id/backImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/ic_launcher_background"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"/>-->
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/backImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_launcher_background"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="18dip"
+        app:riv_oval="false"
+        app:riv_mutate_background="true"
+        />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/black_60"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="#33000000"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="18dip"
+        app:riv_oval="false"
+        app:riv_mutate_background="true"
+        />
 
     <ImageView
         android:id="@+id/item_swipe_left_indicator"
@@ -37,6 +61,14 @@
         android:layout_margin="10dp"
         android:layout_gravity="right"
         android:src="@mipmap/dislike"/>
+
+    <ImageView
+        android:id="@+id/pauseBtn_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:src="@mipmap/pause_btn" />
 
     <TextView
         android:id="@+id/song_name"
