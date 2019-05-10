@@ -27,7 +27,7 @@ public class MusicInfo {
      */
     public class Data{
         private String mixsongid,song_name,singer_name,play_url,lyric,
-                cover_url;
+                cover_url,avatar;
         public ArrayList<String> photo_url;
         private Climax climax;
 
@@ -55,6 +55,9 @@ public class MusicInfo {
         }
         public String getPlay_url(){
             return play_url;
+        }
+        public String getAvatar(){
+            return avatar;
         }
         public String getCover_url(){
             return cover_url;

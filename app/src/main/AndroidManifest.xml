@@ -43,7 +43,12 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".likeSongsActivity"></activity>
+        <activity android:name=".likeSongsActivity" />
+
+        <service
+            android:name=".collectService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

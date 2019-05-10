@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,8 +60,12 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+
+import static com.example.zijieyang.mymusicapp.MediaService.mMediaPlayer;
 
 /***
  *  大段注释
@@ -76,32 +81,43 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter arrayAdapter;
     private ListView lvLeftMenu;
     private Button login_btn,setting_btn,next_btn;
-    private MediaPlayer mediaPlayer;
-    private ImageButton disLike_btn,like_btn,play_btn,seek_next_btn;
-    public  ImageView backImage,pauseBtn_image;
+    private ImageButton disLike_btn,like_btn,play_btn,seek_next_btn,seek_disLike_btn,seek_like_btn;
+    public  ImageView backImage,pauseBtn_image,cycle_image,sequential_image;
     private Handler mHandler = new Handler();
-    private MediaService.MyBinder mMyBinder;
+    public  MediaService.MyBinder mMyBinder;
     private SeekBar mSeekBar;
     private TextView now_time,remaining_time,likeSongs_text,song_name,singer_name;
     private RelativeLayout seek_play;
     private List<back_imageBean> backImageList  = new ArrayList<>();
-    private List<back_imageBean> myPhotoUrlList = new ArrayList<>();//背景图片数据列表
-    private List<String> mySongNameList         = new ArrayList<>();//歌曲名字数据列表
-    private List<String> mySingerNameList       = new ArrayList<>();//歌手名字数据列表
+    //private ArrayList<String> musicPath         = new ArrayList<>();
+    //private ArrayList<String> startTimeList     = new ArrayList<>();
+
+    private List<back_imageBean> myPhotoUrlList = new ArrayList<>();//背景图片列表
+    private List<String> mySongNameList         = new ArrayList<>();//歌曲名字列表
+    private List<String> mySingerNameList       = new ArrayList<>();//歌手名字列表
+    private ArrayList<String> myStartTimeList   = new ArrayList<>();//歌曲高潮开始时间列表
+    private ArrayList<String> myMusicPath       = new ArrayList<>();//歌曲地址列表
     private back_imageAdapter bkImgadapter; //背景图片适配器
     private SwipeFlingAdapterView flingContainer;
+    private Boolean firstPost = true;
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+    private int currentPosition;
+    public static MainActivity instance = null;
     //1、获取 OkHttpClient 对象
     private OkHttpClient mHttpClient            = new OkHttpClient();
     //进度条下面的当前进度文字，将毫秒化为m:ss格式
     private SimpleDateFormat time               = new SimpleDateFormat("m:ss");
     //“绑定”服务的intent
     Intent MediaServiceIntent;
+
     private final int PHOTO_URL_LIST   = 0;//handler处理
     private final int SONG_NAME_LIST   = 1;
     private final int SINGER_NAME_LIST = 2;
-    private String[] image = new String[]{"http://imge.kugou.com/v2/mobile_portrait/51839374b4361c4a03e95237fd2aec88.jpg",
-            "http://imge.kugou.com/v2/mobile_portrait/ea300406c1dcd774d76481e2f74c8724.jpg",
-            "http://imge.kugou.com/v2/mobile_portrait/3cdefac43e690d7c04e6d41d82bc9955.jpg"};
+    private final int MUSIC_PATH       = 3;
+    private final int START_TIME_LIST  = 4;
+    public  Boolean isCycle = true;  //默认为循环模式
+
     private Handler newHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -118,6 +134,12 @@ public class MainActivity extends AppCompatActivity {
                 case SINGER_NAME_LIST:
                     mySingerNameList.addAll((List<String>) msg.obj);
                     break;
+                /*case MUSIC_PATH:
+                    myMusicPath.addAll((ArrayList<String>) msg.obj);
+                    break;
+                case START_TIME_LIST:
+                    myStartTimeList.addAll((ArrayList<String>) msg.obj);
+                    break;*/
             }
             System.out.print("歌曲名字列表" + SONG_NAME_LIST);
             System.out.print("歌手名字列表" + SINGER_NAME_LIST);
@@ -128,16 +150,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
         System.out.println("开始进入");
         initView();//初始化控件
         onPost("http://172.17.2.105:7000/requestmusic");//打开app请求数据
 
         swipeCard();
 
+        
         play_btn.setOnClickListener(music_click);
         like_btn.setOnClickListener(music_click);
         disLike_btn.setOnClickListener(music_click);
         seek_next_btn.setOnClickListener(music_click);
+        seek_disLike_btn.setOnClickListener(music_click);
+        seek_like_btn.setOnClickListener(music_click);
+        cycle_image.setOnClickListener(music_click);
+        sequential_image.setOnClickListener(music_click);
 
         /**
          * 以下是实现toolbar以及侧边滑动的一些设置
@@ -189,7 +217,10 @@ public class MainActivity extends AppCompatActivity {
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, loginActivity.class);
+                //destroyService();
+                mMyBinder.pauseMusic();
+                MediaService.mTimer.cancel();
+                Intent intent = new Intent(MainActivity.this, likeSongsActivity.class);
                 Bundle bundle = new Bundle();
 
                 intent.putExtras(bundle); //传数据
@@ -225,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
      */
 
     private void swipeCard(){
+
         bkImgadapter = new back_imageAdapter(MainActivity.this, myPhotoUrlList,mySongNameList,mySingerNameList); //背景图适配器
         final SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
         flingContainer.setAdapter(bkImgadapter);
@@ -240,17 +272,26 @@ public class MainActivity extends AppCompatActivity {
                 myPhotoUrlList.remove(0);
                 mySongNameList.remove(0);
                 mySingerNameList.remove(0);
+                myMusicPath.remove(0);
+                myStartTimeList.remove(0);
                 bkImgadapter.notifyDataSetChanged();
-                mMyBinder.nextMusic();//切换图片就下一首歌
+                switchToMain();//切换界面
+                mMyBinder.nextMusic(); //30s高潮
+                //mMyBinder.nextMusic();//切换图片就下一首歌
             }
 
+            /*
+                左滑逻辑
+             */
             @Override
             public void onLeftCardExit(Object dataObject) {
+
                 Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
+
                 Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
             }
 
@@ -259,7 +300,15 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                onPost("http://172.17.2.105:7000/requestmusic");//打开app请求数据
+                if(firstPost == false) {
+                    Log.i("", "目前图片数 :" + backImageList.size());
+
+
+                }
+                else{
+                    Log.i("", "firstPost :" + firstPost);
+                    firstPost = false;
+                }
             }
 
             @Override
@@ -279,30 +328,30 @@ public class MainActivity extends AppCompatActivity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Toast.makeText(MainActivity.this, "点击了背景图片", Toast.LENGTH_SHORT).show();
                 if (pauseBtn_image.getVisibility() == View.VISIBLE) {//返回值为0，visible；返回值为4，invisible；返回值为8，gone
-                    mMyBinder.playMusic();
+                    mMyBinder.playMusicTwo();
                     pauseBtn_image.setVisibility(View.INVISIBLE);
-                } else if (pauseBtn_image.getVisibility() == View.INVISIBLE) {
+                    Toast.makeText(MainActivity.this, "播放", Toast.LENGTH_SHORT).show();
+                }
+                else if (pauseBtn_image.getVisibility() == View.INVISIBLE) {
                     pauseBtn_image.setVisibility(View.VISIBLE);
                     mMyBinder.pauseMusic();
+                    Toast.makeText(MainActivity.this, "暂停", Toast.LENGTH_SHORT).show();
                 }
-                //Toast.makeText(MainActivity.this,"click",Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
     }
 
 
     /**
      *  开启服务
      */
-    private void startService(ArrayList<String> musicPath){
+    private void startService(ArrayList<String> musicPath, ArrayList<String> startTimeList){
+        Log.i("","进入startService");
         MediaServiceIntent = new Intent(MainActivity.this,MediaService.class);
         Bundle MediaServiceBundle = new Bundle();
         MediaServiceBundle.putStringArrayList("musicPath",musicPath);
+        MediaServiceBundle.putStringArrayList("startTimeList", startTimeList);
         MediaServiceIntent.putExtras(MediaServiceBundle);
         bindService(MediaServiceIntent, serviceConnection, BIND_AUTO_CREATE);
 
@@ -352,10 +401,12 @@ public class MainActivity extends AppCompatActivity {
      */
         public void right() {
             flingContainer.getTopCardListener().selectRight();
+
         }
 
         public void left() {
             flingContainer.getTopCardListener().selectLeft();
+
         }
 
         //获取到权限回调方法
@@ -374,9 +425,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
     }
-
-
-
 
     /**
         显示toolbar上菜单按钮的
@@ -397,27 +445,55 @@ public class MainActivity extends AppCompatActivity {
             switch (v.getId()){
                 case R.id.play_btn:
                     //点击播放按钮 完整版播放样式显示 like & dislike隐藏
-                    like_btn.setVisibility(View.INVISIBLE);
-                    disLike_btn.setVisibility(View.INVISIBLE);
-                    seek_play.setVisibility(View.VISIBLE);
-                    play_btn.setVisibility(View.INVISIBLE);
+                    switchToSeek();
+                    seek_disLike_btn.setVisibility(View.VISIBLE);
+                    pauseBtn_image.setVisibility(View.INVISIBLE);
                     mMyBinder.playMusic();
                     break;
 
                 case R.id.like_btn:
-                    //点击喜欢按钮，切换歌曲暂停按钮需要隐藏
+                    //点击喜欢按钮，切换歌曲 暂停按钮需要隐藏 收藏到喜欢
+                    seek_disLike_btn.setVisibility(View.VISIBLE);
                     pauseBtn_image.setVisibility(View.INVISIBLE);
-                    mMyBinder.nextMusic();
+                    //collectToLike();
                     right();
                     break;
                 case R.id.disLike_btn:
-                    //点击不喜欢按钮，切换歌曲暂停按钮需要隐藏
+                    //点击不喜欢按钮，切换歌曲 暂停按钮需要隐藏
+                    seek_disLike_btn.setVisibility(View.VISIBLE);
                     pauseBtn_image.setVisibility(View.INVISIBLE);
-                    mMyBinder.nextMusic();
                     left();
                     break;
                 case R.id.seek_next_btn:
-                    mMyBinder.nextMusic();
+                    //点击完整版的下一首 左右滑动 切换到初始界面
+                    seek_disLike_btn.setVisibility(View.VISIBLE);
+                    pauseBtn_image.setVisibility(View.INVISIBLE);
+                    left();
+                    switchToMain();
+                    break;
+                case R.id.seek_disLike_btn:
+                    //点击完整版的不喜欢 切歌 左右滑动 切换到初始界面
+                    pauseBtn_image.setVisibility(View.INVISIBLE);
+                    left();
+                    switchToMain();
+                    break;
+                case R.id.seek_like_btn:
+                    //点击完整版的喜欢  不切歌 不喜欢按钮隐藏  收藏到喜欢的歌
+                    seek_disLike_btn.setVisibility(View.INVISIBLE);
+                    Toast.makeText(MainActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.cycle_image:
+                    cycle_image.setVisibility(View.INVISIBLE);
+                    sequential_image.setVisibility(View.VISIBLE);
+                    MainActivity.instance.isCycle = false;
+                    //mMyBinder.playMusic(); //切换了模式，再调用，为了刷新mediaPlayer的setLooping属性
+                    Toast.makeText(MainActivity.this, "切换到顺序播放", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.sequential_image:
+                    cycle_image.setVisibility(View.VISIBLE);
+                    sequential_image.setVisibility(View.INVISIBLE);
+                    MainActivity.instance.isCycle = true;
+                    Toast.makeText(MainActivity.this, "切换到循环播放", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -425,6 +501,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("","进入到onDestroy");
         //我们的handler发送是定时1000s发送的，如果不关闭，MediaPlayer release掉了还在获取getCurrentPosition就会爆IllegalStateException错误
         mHandler.removeCallbacks(mRunnable);
         mMyBinder.closeMedia();
@@ -438,96 +515,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             mSeekBar.setProgress(mMyBinder.getPlayPosition()); //进度条跟着播放位置走
+            mSeekBar.setMax(mMyBinder.getProgress());
             now_time.setText(time.format(mMyBinder.getPlayPosition())); //目前播放时间
             remaining_time.setText(time.format(mMyBinder.getProgress()));//总时间
             mHandler.postDelayed(mRunnable, 1000);
         }
     };
-
-
-    /**
-    * 播放音乐
-     */
-    /*protected void play() {
-        String path = musicPath[0];
-        File file = new File(path);
-        //Toast.makeText(MainActivity.this, "点击播放", Toast.LENGTH_SHORT).show();
-        if (file.exists() && file.length() > 0) {
-            try {
-                mediaPlayer = new MediaPlayer();
-                // 设置指定的流媒体地址
-                mediaPlayer.setDataSource(path);
-                //mediaPlayer=MediaPlayer.create(this, R.raw.love);
-                // 设置音频流的类型
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-                // 通过异步的方式装载媒体资源
-                mediaPlayer.prepareAsync();
-                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                     public void onPrepared(MediaPlayer mp) {
-                        // 装载完毕 开始播放流媒体
-                        mediaPlayer.start();
-                        Toast.makeText(MainActivity.this, "开始播放", Toast.LENGTH_SHORT).show();
-                        // 避免重复播放，把播放按钮设置为不可用
-                        play_btn.setEnabled(false);
-                    }
-                 });
-                // 设置循环播放
-                //mediaPlayer.setLooping(true);
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-                    @Override
-                     public void onCompletion(MediaPlayer mp) {
-                        // 在播放完毕被回调
-                        play_btn.setEnabled(true);
-                    }
-                 });
-
-                mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-
-                    @Override
-                     public boolean onError(MediaPlayer mp, int what, int extra) {
-                        // 如果发生错误，重新播放
-                        replay();
-                        return false;
-                    }
-                 });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "播放失败", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "文件不存在", Toast.LENGTH_SHORT).show();
-        }
-    }*/
-
-    /*protected void play(){
-        mediaPlayer = new MediaPlayer();
-        Toast.makeText(MainActivity.this, "点击播放", Toast.LENGTH_SHORT).show();
-        mediaPlayer = MediaPlayer.create(this,R.raw.love);
-        mediaPlayer.start();
-    }
-     *//**
-       * 暂停
-       *//*
-     protected void pause() {
-         if (pauseBtn_image.getVisibility() == View.VISIBLE) {
-             pauseBtn_image.setVisibility(View.GONE);
-             //btn_pause.setText("暂停");
-             mediaPlayer.start();
-             Toast.makeText(this, "继续播放", Toast.LENGTH_SHORT).show();
-             return;
-             }
-
-         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-             mediaPlayer.pause();
-             pauseBtn_image.setVisibility(View.VISIBLE);
-             //btn_pause.setText("继续");
-             Toast.makeText(this, "暂停播放", Toast.LENGTH_SHORT).show();
-         }
-     }*/
 
     /**
         okHttp post提交数据
@@ -563,34 +556,39 @@ public class MainActivity extends AppCompatActivity {
                     final String res = response.body().string();
                     final MusicInfo musicInfo = new Gson().fromJson(res,MusicInfo.class); //通过Gson解析服务器返回的json数据
                     System.out.print("musicInfo = " + musicInfo);
+
                     backImageList = new ArrayList<>();//背景图片
-                    List<String> songNameList = new ArrayList<>();//歌曲名字
+                    //musicPath     = new ArrayList<>();//歌曲地址
+                    //myStartTimeList = new ArrayList<>();//高潮开始时间
+                    List<String> songNameList   = new ArrayList<>();//歌曲名字
                     List<String> singerNameList = new ArrayList<>();//歌手名字
+
                     //循环获取json数据中不同的具体数据
                     for(int i = 0;i < musicInfo.getData().size();i++){
-                        backImageList.add(new back_imageBean(musicInfo.getData().get(i).photo_url.get(0)));
+                        if(musicInfo.getData().get(i).photo_url.size() == 0){
+                            backImageList.add(new back_imageBean("http://imge.kugou.com/v2/mobile_portrait/51839374b4361c4a03e95237fd2aec88.jpg"));
+                        }
+                        else{backImageList.add(new back_imageBean(musicInfo.getData().get(i).photo_url.get(0)));}
+
                         songNameList.add(musicInfo.getData().get(i).getSong_name());
                         singerNameList.add(musicInfo.getData().get(i).getSinger_name());
+                        myMusicPath.add(musicInfo.getData().get(i).getPlay_url());
+                        myStartTimeList.add(musicInfo.getData().get(i).getClimax().getStart_time());
                     }
 
-                    /*Message message = new Message();
-                    message.obj = backImageList;
-                    message.what = type;
-                    newHandler.sendMessage(message);*/
                     sendToHandler(backImageList,PHOTO_URL_LIST);
                     sendToHandler(songNameList,SONG_NAME_LIST);
                     sendToHandler(singerNameList,SINGER_NAME_LIST);
+                    /*sendToHandler(musicPath,MUSIC_PATH);
+                    sendToHandler(startTimeList,START_TIME_LIST);*/
 
-                    /*
-                        获取Post返回的数据中的音乐播放路径，存储在列表中
-                     */
-                    ArrayList<String> mymusicPath = new ArrayList<>();
-                    for(int i =0; i < musicInfo.getData().size();i++){
-                        mymusicPath.add(musicInfo.getData().get(i).getPlay_url());
-                        Log.i("歌曲路径 ", mymusicPath.get(i));
+                    startService(myMusicPath,myStartTimeList); //传递给服务
 
-                    }
-                    startService(mymusicPath);
+                    Log.i("","歌曲路径" + myMusicPath);
+                    //Log.i("","歌曲开始时间" + myStartTimeList);
+
+
+                    //mainStartMusic();
                     //onResponse 方法不能直接操作 UI 线程，利用 runOnUiThread 操作 ui
                     /*runOnUiThread(new Runnable() {
                         @Override
@@ -644,6 +642,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     /**
+     * 切换到30s高潮界面（初始）
+     */
+    public void switchToMain(){
+        //完整切换为隐藏，不喜欢/喜欢/播放按钮切换为显示
+        like_btn.setVisibility(View.VISIBLE);
+        disLike_btn.setVisibility(View.VISIBLE);
+        seek_play.setVisibility(View.INVISIBLE);
+        play_btn.setVisibility(View.VISIBLE);
+    }
+    /**
+     * 切换到完整播放界面
+     */
+    public void switchToSeek(){
+        //完整切换为显示，不喜欢/喜欢/播放按钮切换为隐藏
+        like_btn.setVisibility(View.INVISIBLE);
+        disLike_btn.setVisibility(View.INVISIBLE);
+        seek_play.setVisibility(View.VISIBLE);
+        play_btn.setVisibility(View.INVISIBLE);
+
+    }
+    /**
+     * 收藏逻辑
+     * 在卡片滑动之前，将卡片所带的歌曲or歌手名字数据传给likeSongsActivity的列表
+     * 实时刷新适配器数据
+     */
+    public void collectToLike(){
+        likeSongsActivity.instance.songNameList.add(mySongNameList.get(0));
+        likeSongsActivity.instance.singerNameList.add(mySingerNameList.get(0));
+        likeSongsActivity.instance.collectAdapter.notifyDataSetChanged();
+    }
+
+    /**
      * 传递数据给handler,参数object表示传递的数据, type表示传给handler中哪个列表
      */
     public void sendToHandler(Object object ,Integer type){
@@ -651,6 +681,13 @@ public class MainActivity extends AppCompatActivity {
         message.obj = object;
         message.what = type;
         newHandler.sendMessage(message);
+    }
+    public void destroyService(){
+        Log.i("","destroyService");
+        mHandler.removeCallbacks(mRunnable);
+        mMyBinder.closeMedia();
+        unbindService(serviceConnection);
+        Log.i("","Me: " + MediaService.mMediaPlayer);
     }
     /**
      * 初始界面控件
@@ -663,15 +700,23 @@ public class MainActivity extends AppCompatActivity {
         disLike_btn     = findViewById(R.id.disLike_btn);     //左滑按钮
         like_btn        = findViewById(R.id.like_btn);        //右滑按钮
         flingContainer  = findViewById(R.id.frame);
-        pauseBtn_image  = findViewById(R.id.pauseBtn_image);  //暂停icon
+        //pauseBtn_image  = findViewById(R.id.pauseBtn_image);//暂停icon
         mSeekBar        = findViewById(R.id.mSeekBar);        //进度条
         now_time        = findViewById(R.id.now_time);        //目前时间
         remaining_time  = findViewById(R.id.remaining_time);  //剩余时间修改 → 总时间
         seek_play       = findViewById(R.id.seek_play);       //完整版样式布局
         seek_next_btn   = findViewById(R.id.seek_next_btn);   //完整版下一首
+        seek_disLike_btn= findViewById(R.id.seek_disLike_btn);//完整版关闭按钮
+        seek_like_btn   = findViewById(R.id.seek_like_btn);   //完整版下一首
         song_name       = findViewById(R.id.song_name);       //歌曲名字
-        singer_name       = findViewById(R.id.singer_name);   //歌手名字
+        singer_name     = findViewById(R.id.singer_name);     //歌手名字
+        cycle_image     = findViewById(R.id.cycle_image);     //循环icon
+        sequential_image= findViewById(R.id.sequential_image);//顺序icon
         //likeSongs_text  = findViewById(R.id.likeSongs_text);
+        //pauseBtn_image  = LayoutInflater.from(MainActivity.this).inflate(R.layout.backimage_item, null).findViewById(R.id.pauseBtn_image);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.backimage_item,null);
+        pauseBtn_image = view.findViewById(R.id.pauseBtn_image);
 
     }
 }

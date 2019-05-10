@@ -27,9 +27,9 @@ public class pickActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView_one,recyclerView_two,recyclerView_three;
     private String[] symbol_three = new String[]{"华语","欧美","日语","韩语","粤语","小语种"};//language
-    private String[] symbol_four = new String[]{"流行","摇滚","R&B","电音","嘻哈","民谣","轻音乐","古风","复古","舞曲","古典","二次元","另类/独立"};//style
-    private String[] symbol_two = new String[]{"今年","2018","2017","2016","10'","2000'","90'","更早"};//date
-    private String[] symbol_one = new String[]{"翻唱","ACG","影视BGM","3D音乐","丧曲","小众音乐人","抖音"};//Trending Now
+    private String[] symbol_four  = new String[]{"流行","摇滚","R&B","电音","嘻哈","民谣","轻音乐","古风","复古","舞曲","古典","二次元","另类/独立"};//style
+    private String[] symbol_two   = new String[]{"今年","2018","2017","2016","10'","2000'","90'","更早"};//date
+    private String[] symbol_one   = new String[]{"翻唱","ACG","影视BGM","3D音乐","丧曲","小众音乐人","抖音"};//Trending Now
     private Button ok_btn,random_btn,button,test_btn;
     private Boolean random_isSelected = false;
     private Toolbar toolbar;
